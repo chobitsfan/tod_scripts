@@ -1,0 +1,2 @@
+#!/bin/sh
+sudo usb_modeswitch -v 12d1 -p 1f01 -c /usr/share/usb_modeswitch/12d1\:1f01
