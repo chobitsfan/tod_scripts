@@ -1,1 +1,1 @@
-mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:127.0.0.1:14550
+mavproxy.py --quadcopter --master=/dev/ttyAMA0 --cmd="set source_system 254;set heartbeat 0" --load-module=chobits --out=udp:127.0.0.1:14550
