@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ -f  "/tmp/my_startup_lock" ]
 then 
-	exit 0
+    exit 0
 fi
 touch /tmp/my_startup_lock
 
@@ -20,15 +20,19 @@ touch /tmp/my_startup_lock
 usb_modeswitch -s 10 -v 12d1 -p 14fe -V 12d1 -P 1506 -M '55534243123456780000000000000011062000000100000000000000000000'
 sleep 1
 echo -e "AT^NDISDUP=1,1,\"internet\"\r" > /dev/ttyUSB0
-#sleep 10
+sleep 1
 
 while true
 do
-	ifconfig wwan0 | grep -q "inet addr:169"
-	if [ $? == 1 ]; then
-		break
-	fi 	
-	sleep 1
+    ifconfig wwan0
+    if [ $? == 1 ]; then
+        exit 0
+    fi
+    ifconfig wwan0 | grep -q "inet addr:169"
+    if [ $? == 1 ]; then
+        break
+    fi  
+    sleep 1
 done
 
 #wifi ap for iphone
@@ -42,5 +46,6 @@ done
 #python /home/pi/mqtt_client/MQTTSNclient_drone.py drone1 &
 #mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:127.0.0.1:14550 --daemon --cmd="set source_system 254;set heartbeat 0"
 #python /home/pi/src/scripts/mav_enc_fwd.py &
-mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:140.96.178.37:8090 --daemon --cmd="set source_system 250;set heartbeat 0" --load-module=chobits
+#mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:140.96.178.37:8090 --daemon --cmd="set source_system 250;set heartbeat 0" --load-module=chobits
+mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:10.101.136.142:8090 --daemon --cmd="set source_system 250;set heartbeat 0" --load-module=chobits
 exit 0
