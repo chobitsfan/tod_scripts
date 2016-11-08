@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ -f  "/tmp/my_startup_lock" ]
 then 
-	exit 0
+    exit 0
 fi
 touch /tmp/my_startup_lock
 
@@ -28,11 +28,11 @@ do
     if [ $? == 1 ]; then
         exit 0
     fi
-	ifconfig wwan0 | grep -q "inet addr:169"
-	if [ $? == 1 ]; then
-		break
-	fi 	
-	sleep 1
+    ifconfig wwan0 | grep -q "inet addr:169"
+    if [ $? == 1 ]; then
+        break
+    fi  
+    sleep 1
 done
 
 #wifi ap for iphone
