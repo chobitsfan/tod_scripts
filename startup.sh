@@ -41,6 +41,7 @@ done
 #iptables -t nat -A POSTROUTING -s 10.1.1.0/16 -o eth1 -j MASQUERADE
 #hostapd /etc/hostapd/iphone.conf &
 
+#nat for ip camera
 sysctl net.ipv4.ip_forward=1
 iptables -t nat -A POSTROUTING -o wwan0 -j MASQUERADE
 iptables -A FORWARD -i wwan0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
@@ -52,6 +53,6 @@ service udhcpd start
 #python /home/pi/mqtt_client/MQTTSNclient_drone.py drone1 &
 #mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:127.0.0.1:14550 --daemon --cmd="set source_system 254;set heartbeat 0"
 #python /home/pi/src/scripts/mav_enc_fwd.py &
-#mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:140.96.178.37:8090 --daemon --cmd="set source_system 250;set heartbeat 0" --load-module=chobits
+mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:140.96.178.37:8090 --daemon --cmd="set source_system 250;set heartbeat 0" --load-module=chobits
 #mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:10.101.136.142:8090 --daemon --cmd="set source_system 250;set heartbeat 0" --load-module=chobits
 exit 0
