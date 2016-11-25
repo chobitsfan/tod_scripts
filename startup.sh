@@ -46,7 +46,8 @@ do
     sleep 1
 done
 
-sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:140.96.178.37:8090 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
+#sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:140.96.178.37:8090 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
+sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:10.101.136.142:8090 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
 
 #wifi ap for iphone
 #ifconfig wlan0 10.1.1.1 netmask 255.255.255.0
@@ -55,10 +56,13 @@ sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter
 #hostapd /etc/hostapd/iphone.conf &
 
 #nat for ip camera
-sysctl net.ipv4.ip_forward=1
-iptables -t nat -A POSTROUTING -s 192.168.1.0/16 -o wwan0 -j MASQUERADE
-iptables -A FORWARD -i wwan0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth0 -o wwan0 -j ACCEPT
+ifconfig wwan0
+if [ $? == 0 ]; then
+    sysctl net.ipv4.ip_forward=1
+    iptables -t nat -A POSTROUTING -o wwan0 -j MASQUERADE
+    iptables -A FORWARD -i wwan0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -A FORWARD -i eth0 -o wwan0 -j ACCEPT
+fi
 #service udhcpd start
 
 #cd /home/pi/src/dtls_transport && /home/pi/src/dtls_transport/a.out -p 8100 140.96.178.37 &
