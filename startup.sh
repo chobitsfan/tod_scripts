@@ -9,7 +9,16 @@ touch /tmp/my_startup_lock
 #hostapd /etc/hostapd/iphone.conf &
 #sleep 5
 
-#mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=10.1.1.10:14550 --daemon --cmd="set source_system 254;set heartbeat 0"
+#for CES demo
+ifconfig eth1
+if [ $? == 0 ]; then
+    sysctl net.ipv4.ip_forward=1
+    iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+    iptables -A FORWARD -i eth1 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
+    sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udpbcast:192.168.8.255:14550 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
+    exit 0
+fi
 
 #exit 0
 
