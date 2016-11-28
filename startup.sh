@@ -16,7 +16,8 @@ if [ $? == 0 ]; then
     iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
     iptables -A FORWARD -i eth1 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
     iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
-    sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udpbcast:192.168.8.255:14550 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
+    bcast_addr=`ifconfig eth1 | grep -o -E "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.255"`
+    sudo -u pi tmux new-session -d -s hello "cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udpbcast:$bcast_addr:14550 --cmd='set source_system 250;set heartbeat 0;module load chobits' --moddebug=3"
     exit 0
 fi
 
