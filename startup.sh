@@ -26,13 +26,13 @@ fi
 #huawei fix
 #usb_modeswitch -v 12d1 -p 1f01 -c /usr/share/usb_modeswitch/12d1\:1f01
 
-service udhcpd start
+#service udhcpd start
 
 #huawei e3372h modem switch
 usb_modeswitch -s 10 -v 12d1 -p 14fe -V 12d1 -P 1506 -M '55534243123456780000000000000011062000000100000000000000000000'
-sleep 3
+sleep 1
 echo -e "AT^NDISDUP=1,1,\"internet\"\r" > /dev/ttyUSB0
-sleep 3
+sleep 1
 
 while true
 do
@@ -56,8 +56,8 @@ do
     sleep 1
 done
 
-#sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:140.96.178.37:8090 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
-sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --out=udp:10.101.136.142:8090 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
+sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --baudrate=19200 --out=udp:140.96.178.37:8090 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
+#sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --baudrate=19200 --out=udp:10.101.136.142:8090 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
 
 #wifi ap for iphone
 #ifconfig wlan0 10.1.1.1 netmask 255.255.255.0
