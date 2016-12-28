@@ -56,8 +56,22 @@ do
     sleep 1
 done
 
-sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --baudrate=19200 --out=udp:140.96.178.37:8090 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
-#sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --baudrate=19200 --out=udp:10.101.136.142:8090 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
+echo -e "AT+COPS=3,0\r" > /dev/ttyUSB0
+echo -e "AT+COPS=3,0\r" > /dev/ttyUSB0 #twice, 1st will error, do not know why
+echo -e "AT+COPS?\r" > /dev/ttyUSB0
+echo -e "AT+COPS?\r" > /dev/ttyUSB0
+while read -r line
+do
+    if [[ $line =~ .*COPS.* ]]; then
+        if [[ $line =~ .*ITRI.* ]]; then
+            sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --baudrate=19200 --out=udp:10.101.136.142:8090 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
+            break
+        else
+            sudo -u pi tmux new-session -d -s hello 'cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0 --baudrate=19200 --out=udp:140.96.178.37:8090 --cmd="set source_system 250;set heartbeat 0;module load chobits" --moddebug=3'
+            break
+        fi
+    fi
+done < /dev/ttyUSB0
 
 #wifi ap for iphone
 #ifconfig wlan0 10.1.1.1 netmask 255.255.255.0
