@@ -1,13 +1,57 @@
 #!/bin/bash
-if [ -f  "/tmp/my_startup_lock" ]
-then 
-    exit 0
-fi
-touch /tmp/my_startup_lock
+#if [ -f  "/tmp/my_startup_lock" ]
+#then 
+#    exit 0
+#fi
+#touch /tmp/my_startup_lock
 
-ifconfig wlan0 10.1.1.1 netmask 255.255.255.0
-hostapd /etc/hostapd/iphone.conf &
-#sleep 5
+#iwconfig wlan0 power off
+
+#sudo -u pi tmux new-session -d -s hello "cd /home/pi && mavproxy.py --quadcopter --master=/dev/ttyAMA0,921600 --load-module=DGPS"
+
+#ifconfig wlan0 10.1.1.1 netmask 255.255.255.0
+#hostapd /etc/hostapd/iphone.conf &
+
+modprobe qmi_wwan
+
+#sudo -u pi tmux new-session -d -s fwd "cd /home/pi/src/mav_fwd && python mav_fwd3.py"
+
+#exit 0
+
+while true
+do
+    ifconfig wwan0
+    if [ $? == 0 ]; then
+        break
+    fi
+    sleep 1
+done
+
+while true
+do
+    ifconfig wwan0 | grep -q "inet addr:"
+    if [ $? == 0 ]; then
+        break
+    fi
+    sleep 1
+done
+
+while true
+do
+    ifconfig wwan0 | grep -q "inet addr:169"
+    if [ $? == 1 ]; then
+        break
+    fi
+    sleep 1
+done
+
+sleep 1
+sudo -u pi tmux new-session -d -s fwd "cd /home/pi/src/mav_fwd && python mav_fwd3.py 140.96.178.37:8090"
+
+exit 0
+
+#sudo -u pi tmux new-session -d -s picam "cd /home/pi/git/robidouille/raspicam_cv && ./raspicamtest"
+#sudo -u pi tmux new-session -d -s land "cd /home/pi/src/landing && python picam_landing.py"
 
 #for CES demo
 #ifconfig eth1
@@ -30,13 +74,13 @@ hostapd /etc/hostapd/iphone.conf &
 #service udhcpd start
 
 #for dlink dwm-222
-usb_modeswitch -v 2001 -p ab00 -W -n -M '555342431060D30B000000000001061B000000020000000000000000000000'
-modprobe qmi_wwan
-modprobe option
-echo "2001 7e35" > /sys/bus/usb-serial/drivers/option1/new_id
-qmi-network /dev/cdc-wdm0 start
+#modprobe qmi_wwan
+#usb_modeswitch -s 10 -v 2001 -p ab00 -W -n -M '555342431060D30B000000000001061B000000020000000000000000000000'
+#usb_modeswitch -s 10 -v 2001 -p ab00 -V 2001 -P 7e35 -M '555342431060D30B000000000001061B000000020000000000000000000000'
+#modprobe option
+#echo "2001 7e35" > /sys/bus/usb-serial/drivers/option1/new_id
+#qmi-network /dev/cdc-wdm0 start
 
-exit 0
 
 #huawei e3372h modem switch
 usb_modeswitch -s 10 -v 12d1 -p 14fe -V 12d1 -P 1506 -M '55534243123456780000000000000011062000000100000000000000000000'
